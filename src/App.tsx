@@ -10,7 +10,7 @@ function App() {
     <Router>
       <div className="flex flex-col min-h-screen">
         {/* الصفحات */}
-        <div className="flex-grow">
+        <div className="flex-grow pb-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/progress" element={<Progress />} />
