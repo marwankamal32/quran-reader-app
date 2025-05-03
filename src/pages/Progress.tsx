@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import ProgressHeader from "../components/ProgressHeader";
+import ProgressHeader from '../components/ProgressHeader';
 
-import CalendarGrid from "../components/CalendarGrid";
+import CalendarGrid from '../components/CalendarGrid';
 
-import DonationSettings from "../components/DonationSettings";
+import DonationSettings from '../components/DonationSettings';
 
 export default function Progress() {
   const [donationPerMiss, setDonationPerMiss] = useState(5);
@@ -13,17 +13,16 @@ export default function Progress() {
       <h1 className="text-2xl font-bold mb-4">Your Progress</h1>
 
       {/* Summary Cards */}
-      {<ProgressHeader completed={15} missed={3} donated={5}/>}
+      {<ProgressHeader completed={15} missed={3} donated={15} />}
 
       {/* Calendar */}
-      <CalendarGrid/>
+      <CalendarGrid />
 
       {/* Donation Settings */}
-     <DonationSettings
-     donationPerMiss={donationPerMiss}
-     setDonationPerMiss={setDonationPerMiss}/>
-
-    
+      <DonationSettings
+        donationPerMiss={donationPerMiss}
+        setDonationPerMiss={setDonationPerMiss}
+      />
     </div>
   );
 }

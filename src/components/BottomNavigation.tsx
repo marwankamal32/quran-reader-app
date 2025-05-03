@@ -1,14 +1,19 @@
-import { Link, useLocation } from "react-router-dom";
-import { HomeIcon, LineChartIcon, CreditCardIcon, UserIcon } from "lucide-react";
+import { Link, useLocation } from 'react-router-dom';
+import {
+  HomeIcon,
+  LineChartIcon,
+  CreditCardIcon,
+  UserIcon,
+} from 'lucide-react';
 
 function BottomNavigation() {
   const location = useLocation();
 
   const navItems = [
-    { label: "Home", icon: HomeIcon, path: "/" },
-    { label: "Progress", icon: LineChartIcon, path: "/progress" },
-    { label: "Payment", icon: CreditCardIcon, path: "/payment" },
-    { label: "Profile", icon: UserIcon, path: "/profile" },
+    { label: 'Home', icon: HomeIcon, path: '/' },
+    { label: 'Progress', icon: LineChartIcon, path: '/progress' },
+    { label: 'Payment', icon: CreditCardIcon, path: '/payment' },
+    { label: 'Profile', icon: UserIcon, path: '/profile' },
   ];
 
   return (

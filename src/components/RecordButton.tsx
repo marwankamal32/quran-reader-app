@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const RecordButton = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null
+  );
 
   const startRecording = async () => {
     try {
@@ -11,15 +13,15 @@ const RecordButton = () => {
       recorder.start();
 
       recorder.ondataavailable = (event) => {
-        const audioBlob = new Blob([event.data], { type: "audio/wav" });
+        const audioBlob = new Blob([event.data], { type: 'audio/wav' });
 
-        console.log("Audio Blob", audioBlob);
+        console.log('Audio Blob', audioBlob);
       };
 
       setMediaRecorder(recorder);
       setIsRecording(true);
     } catch (err) {
-      console.error("Microphone access denied", err);
+      console.error('Microphone access denied', err);
     }
   };
 
