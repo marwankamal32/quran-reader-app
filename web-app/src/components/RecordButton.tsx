@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-const RecordButton = () => {
+interface RecordButtonProps {
+  onRecordingComplete?: () => void;
+}
+
+const RecordButton = ({ onRecordingComplete }: RecordButtonProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
     null
@@ -29,6 +33,11 @@ const RecordButton = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
       setIsRecording(false);
+      
+      // Call the callback function when recording is complete
+      if (onRecordingComplete) {
+        onRecordingComplete();
+      }
     }
   };
 
