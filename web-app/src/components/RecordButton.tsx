@@ -18,7 +18,6 @@ const RecordButton = ({ onRecordingComplete }: RecordButtonProps) => {
 
       recorder.ondataavailable = (event) => {
         const audioBlob = new Blob([event.data], { type: 'audio/wav' });
-
         console.log('Audio Blob', audioBlob);
       };
 
@@ -44,9 +43,19 @@ const RecordButton = ({ onRecordingComplete }: RecordButtonProps) => {
   return (
     <button
       onClick={isRecording ? stopRecording : startRecording}
-      className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-3xl shadow-lg"
+      className={`
+        w-16 h-16 rounded-full 
+        flex items-center justify-center
+        shadow-md 
+        ${isRecording 
+          ? 'bg-red-600 animate-pulse' 
+          : 'bg-gradient-to-r from-amber-500 to-amber-600'}
+        ${isRecording ? 'shadow-red-700/50' : 'shadow-amber-700/50'}
+        transform transition-all duration-200
+        ${isRecording ? 'scale-110' : 'hover:scale-105 active:scale-95'}
+      `}
     >
-      🎤
+      <span className="text-xl">{isRecording ? '⏹️' : '🎤'}</span>
     </button>
   );
 };

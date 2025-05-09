@@ -6,7 +6,7 @@ import { Home, Progress, Payment, Profile } from "@pages/.";
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col">
         <div className="flex-grow pb-16">
           <Routes>
             <Route path="/" element={<Home />} />

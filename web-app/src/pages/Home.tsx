@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import RecordButton from '../components/RecordButton';
-import HeaderSection from '../components/HeaderSection';
 
 export default function Home() {
   // State to track recording status
@@ -12,53 +11,65 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 flex flex-col">
-      {/* Header Section */}
-      <HeaderSection />
+    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white overflow-hidden safe-area-inset-bottom">
+      {/* Title Bar - Smaller */}
+      <div className="pt-4 pb-1 px-4 text-center border-b border-indigo-700">
+        <h1 className="text-lg font-bold">Daily Quran Reading</h1>
+        <div className="flex items-center justify-center mt-0.5">
+          <span className="w-6 h-px bg-amber-300/60"></span>
+          <p className="text-xs text-indigo-200 mx-2 py-0.5">Begin your journey with Allah's words</p>
+          <span className="w-6 h-px bg-amber-300/60"></span>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col items-center justify-center flex-grow text-center px-6 py-8 space-y-8">
-        {/* Recording Status Card */}
-        <div className="bg-white rounded-xl shadow-md p-5 w-full max-w-md">
-          <div className="flex items-center gap-3 mb-3">
-            <span role="img" aria-label="status" className="text-2xl">
-              {hasRecorded ? '✅' : '⏱️'}
-            </span>
-            <h2 className="font-semibold text-lg">Recording Status</h2>
+      {/* Main Content - Reduced padding for mobile screens and navigation bar */}
+      <div className="flex-1 flex flex-col items-center justify-evenly px-4 py-2 pb-safe">
+        {/* Recording Status - Improved Design */}
+        <div className={`w-full max-w-xs rounded-lg p-3 border border-opacity-20 transition-colors duration-300 ${
+          hasRecorded ? 'bg-green-900/30 border-green-400' : 'bg-amber-900/20 border-amber-400'
+        }`}>
+          <div className="flex items-center">
+            <div className={`w-2.5 h-2.5 rounded-full mr-2 ${
+              hasRecorded ? 'bg-green-400 animate-pulse' : 'bg-amber-400'
+            }`}></div>
+            <h2 className="text-sm font-medium">Recording Status</h2>
           </div>
-          <p className={`font-medium ${hasRecorded ? 'text-green-600' : 'text-orange-500'}`}>
+          <p className={`text-xs mt-1.5 pl-4.5 ${
+            hasRecorded ? 'text-green-300' : 'text-amber-200'
+          }`}>
             {hasRecorded 
-              ? "Today's recording completed!" 
+              ? "Today's reading completed ✓" 
               : "You haven't recorded today yet"}
           </p>
         </div>
 
-        {/* Record Button Section */}
-        <div className="flex flex-col items-center my-6">
-          <RecordButton onRecordingComplete={handleRecordingComplete} />
-          <p className="mt-4 font-semibold text-indigo-800">
+        {/* Record Button - Centered and Smaller */}
+        <div className="flex flex-col items-center -my-2">
+          <div className="relative">
+            <RecordButton onRecordingComplete={handleRecordingComplete} />
+          </div>
+          <p className="mt-2 text-xs font-medium">
             Tap to record your Quran reading
           </p>
-          <p className="text-sm text-indigo-400">Minimum 30 seconds required</p>
         </div>
 
-        {/* Payment Info Card */}
-        <div className="bg-white rounded-xl shadow-md p-5 w-full max-w-md">
-          <div className="flex items-center gap-3 mb-3">
-            <span role="img" aria-label="money" className="text-2xl">
-              {hasRecorded ? '🎁' : '💰'}
-            </span>
-            <h2 className="font-semibold text-lg">Daily Reward</h2>
+        {/* Daily Commitment - Improved Design */}
+        <div className={`w-full max-w-xs rounded-lg p-3 border border-opacity-20 transition-colors duration-300 mb-4 ${
+          hasRecorded ? 'bg-teal-900/30 border-teal-400' : 'bg-rose-900/20 border-rose-400'
+        }`}>
+          <div className="flex items-center">
+            <div className={`w-2.5 h-2.5 rounded-full mr-2 ${
+              hasRecorded ? 'bg-teal-400' : 'bg-rose-400'
+            }`}></div>
+            <h2 className="text-sm font-medium">Daily Commitment</h2>
           </div>
-          {hasRecorded ? (
-            <p className="text-green-600">
-              Great job completing today's reading! Your streak is building.
-            </p>
-          ) : (
-            <p className="text-red-500">
-              $5 will be automatically donated if you don't complete today's recording.
-            </p>
-          )}
+          <p className={`text-xs mt-1.5 pl-4.5 ${
+            hasRecorded ? 'text-teal-300' : 'text-rose-200'
+          }`}>
+            {hasRecorded 
+              ? "Commitment fulfilled! No donation needed." 
+              : "$5 will be donated if not completed today."}
+          </p>
         </div>
       </div>
     </div>
