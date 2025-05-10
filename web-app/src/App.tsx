@@ -1,16 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Progress from "./pages/Progress";
-import Payment from "./pages/Payment";
-import Profile from "./pages/Profile";
-import BottomNavigation from "./components/BottomNavigation";
+
+import { BottomNavigation } from "@components/.";
+import { Home, Progress, Payment, Profile } from "@pages/.";
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        {/* الصفحات */}
-        <div className="flex-grow">
+      <div className="flex flex-col">
+        <div className="flex-grow pb-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/progress" element={<Progress />} />
@@ -18,7 +15,6 @@ function App() {
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
-
         <BottomNavigation />
       </div>
     </Router>
