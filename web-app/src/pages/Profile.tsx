@@ -16,34 +16,32 @@ export default function Profile() {
       {/* Profile Content */}
       <div className="flex-1 flex flex-col items-center px-4 py-6">
         {/* Profile Avatar & Name */}
-        <div className="mb-6 text-center">
+        {/* <div className="mb-6 text-center">
           <div className="w-16 h-16 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center text-xl mb-3 mx-auto">
             👤
           </div>
           <h2 className="text-base font-bold">Abdullah</h2>
-        </div>
+        </div> */}
         
         {/* Key Stats */}
-        <div className="w-full max-w-xs flex justify-between mb-8">
-          {/* Current Streak */}
+        {/* <div className="w-full max-w-xs flex justify-between mb-8">
           <div className="text-center px-4">
             <p className="text-2xl font-bold text-amber-300">{userStats.streakDays}</p>
             <p className="text-xs text-indigo-200">Day Streak</p>
           </div>
           
-          {/* Donations Saved */}
           <div className="text-center px-4">
             <p className="text-2xl font-bold text-amber-300">{userStats.donationsSaved}</p>
             <p className="text-xs text-indigo-200">Saved</p>
           </div>
-        </div>
+        </div> */}
         
         {/* Essential Settings */}
         <div className="w-full max-w-xs">
           <ul className="rounded-lg overflow-hidden border border-indigo-700/50">
             <SettingsItem icon="💰" label="Daily Amount" />
             <SettingsItem icon="💳" label="Payment Method" />
-            <SettingsItem icon="🕒" label="Daily Reminder Time" />
+            {/* <SettingsItem icon="🕒" label="Daily Reminder Time" /> */}
           </ul>
           
           {/* Sign Out Button */}

@@ -10,7 +10,7 @@ function BottomNavigation() {
   const location = useLocation();
 
   const navItems = [
-    { label: 'Home', icon: HomeIcon, path: '/' },
+    { label: 'Home', icon: HomeIcon, path: '/home' },
     { label: 'Profile', icon: UserIcon, path: '/profile' },
   ];
 
