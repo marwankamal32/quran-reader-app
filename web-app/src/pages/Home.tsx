@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import RecordButton from '../components/RecordButton';
+import BottomNavigation from '../components/BottomNavigation';
 
 export default function Home() {
   // State to track recording status
@@ -11,7 +12,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white overflow-hidden safe-area-inset-bottom">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white overflow-hidden pb-16">
       {/* Title Bar - Smaller */}
       <div className="pt-4 pb-1 px-4 text-center border-b border-indigo-700">
         <h1 className="text-lg font-bold">Daily Quran Reading</h1>
@@ -22,8 +23,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Main Content - Reduced padding for mobile screens and navigation bar */}
-      <div className="flex-1 flex flex-col items-center justify-evenly px-4 py-2 pb-safe">
+      {/* Main Content - with bottom padding for navigation */}
+      <div className="flex-1 flex flex-col items-center justify-evenly px-4 py-2">
         {/* Recording Status - Improved Design */}
         <div className={`w-full max-w-xs rounded-lg p-3 border border-opacity-20 transition-colors duration-300 ${
           hasRecorded ? 'bg-green-900/30 border-green-400' : 'bg-amber-900/20 border-amber-400'
@@ -53,18 +54,18 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Daily Commitment - Improved Design */}
-        <div className={`w-full max-w-xs rounded-lg p-3 border border-opacity-20 transition-colors duration-300 mb-4 ${
-          hasRecorded ? 'bg-teal-900/30 border-teal-400' : 'bg-rose-900/20 border-rose-400'
+        {/* Daily Commitment - Gold/Amber Theme */}
+        <div className={`w-full max-w-xs rounded-lg p-3 border border-opacity-20 transition-colors duration-300 ${
+          hasRecorded ? 'bg-yellow-800/30 border-yellow-400' : 'bg-amber-800/30 border-amber-500'
         }`}>
           <div className="flex items-center">
             <div className={`w-2.5 h-2.5 rounded-full mr-2 ${
-              hasRecorded ? 'bg-teal-400' : 'bg-rose-400'
+              hasRecorded ? 'bg-yellow-400' : 'bg-amber-500'
             }`}></div>
             <h2 className="text-sm font-medium">Daily Commitment</h2>
           </div>
           <p className={`text-xs mt-1.5 pl-4.5 ${
-            hasRecorded ? 'text-teal-300' : 'text-rose-200'
+            hasRecorded ? 'text-yellow-300' : 'text-amber-300'
           }`}>
             {hasRecorded 
               ? "Commitment fulfilled! No donation needed." 
@@ -72,6 +73,9 @@ export default function Home() {
           </p>
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation />
     </div>
   );
 }
