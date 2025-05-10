@@ -11,8 +11,6 @@ function BottomNavigation() {
 
   const navItems = [
     { label: 'Home', icon: HomeIcon, path: '/' },
-    { label: 'Progress', icon: BarChart3Icon, path: '/progress' },
-    { label: 'Recordings', icon: MicIcon, path: '/recordings' },
     { label: 'Profile', icon: UserIcon, path: '/profile' },
   ];
 
