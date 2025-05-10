@@ -1,8 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   HomeIcon,
-  BarChart3Icon,
-  MicIcon,
   UserIcon,
 } from 'lucide-react';
 
