@@ -1,19 +1,19 @@
 # server/tests/test_models.py
 import pytest
 from sqlalchemy.orm import Session
-from api.db import init_db, get_db, engine
+from api.db import init_db, get_session, engine
 from api.models import Base, User
 from datetime import datetime
 
 @pytest.fixture
 def db():
     # Create test database
-    Base.metadata.create_all(bind=engine)
-    db = next(get_db())
+    init_db()
+    session = next(get_session())
     try:
-        yield db
+        yield session
     finally:
-        db.close()
+        session.close()
         # Clean up after test
         Base.metadata.drop_all(bind=engine)
 

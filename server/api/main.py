@@ -7,7 +7,7 @@ from enum import Enum
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from server.api.db import get_db
+from server.api.db import get_session
 from server.api.models import User
 
 app = FastAPI(
@@ -267,7 +267,7 @@ class GoogleAuthRequest(BaseModel):
     picture: Optional[str] = None
 
 @app.post("/google")
-async def google_auth(request: GoogleAuthRequest, db: Session = Depends(get_db)):
+async def google_auth(request: GoogleAuthRequest, db: Session = Depends(get_session)):
     try:
         # Find or create user
         user = db.query(User).filter(User.email == request.email).first()
