@@ -4,6 +4,11 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import date, timedelta
 from enum import Enum
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from server.api.db import get_db
+from server.api.models import User
 
 app = FastAPI(
     title="Quran Reader API",
@@ -255,3 +260,36 @@ async def set_donation_amount(donation: DonationAmount) -> DonationAmount:
     daily_donation_amount = donation.amount
     return DonationAmount(amount=daily_donation_amount)
 
+
+class GoogleAuthRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+    picture: Optional[str] = None
+
+@app.post("/google")
+async def google_auth(request: GoogleAuthRequest, db: Session = Depends(get_db)):
+    try:
+        # Find or create user
+        user = db.query(User).filter(User.email == request.email).first()
+        
+        if not user:
+            # Create new user
+            user = User(
+                email=request.email,
+                name=request.name,
+                picture=request.picture
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        
+        return {
+            "status": "success",
+            "user": {
+                "email": user.email,
+                "name": user.name,
+                "picture": user.picture
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
