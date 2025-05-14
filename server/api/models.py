@@ -1,6 +1,6 @@
 # server/api/models/base.py
 import uuid
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime
 
