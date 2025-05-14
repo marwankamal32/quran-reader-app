@@ -1,16 +1,23 @@
 import { useNavigate } from 'react-router-dom';
-import { colors } from '../../styles/colors';
+import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 
 export default function GoogleSignup() {
   const navigate = useNavigate();
 
-  const handleGoogleSignup = () => {
-    // In a real implementation, this would trigger Google OAuth
-    // For now, we'll just simulate successful authentication
-    setTimeout(() => {
-      navigate('/onboarding/payment');
-    }, 1000);
+  const handleGoogleSuccess = (tokenResponse: TokenResponse) => {
+    console.log('Login Success:', tokenResponse);
+    navigate('/onboarding/payment');
   };
+
+  const handleGoogleError = () => {
+    console.log('Login Failed');
+  };
+
+  const login = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: handleGoogleError,
+    flow: 'implicit',
+  });
 
   return (
     <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white">
@@ -39,9 +46,9 @@ export default function GoogleSignup() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-full max-w-xs">
-          <button 
-            onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-gray-100 transition-colors text-gray-800 font-medium rounded-lg mb-6"
+          <button
+            onClick={() => login()}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-gray-100 transition-colors text-gray-800 font-medium rounded-lg mb-6 shadow-md hover:shadow-lg active:scale-[0.98]"
           >
             <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
               <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
@@ -53,7 +60,6 @@ export default function GoogleSignup() {
             </svg>
             Continue with Google
           </button>
-
         </div>
       </div>
 
