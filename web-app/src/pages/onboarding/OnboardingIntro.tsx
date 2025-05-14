@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { colors } from '../../styles/colors';
 
 export default function OnboardingIntro() {
   const navigate = useNavigate();
