@@ -24,16 +24,16 @@ export default function DonationSetup() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Progress indicator */}
       <div className="w-full px-6 pt-6">
-        <div className="w-full bg-indigo-700/30 h-1.5 rounded-full">
+        <div className="w-full bg-gray-700/30 h-1.5 rounded-full">
           <div 
-            className="h-full bg-amber-400 rounded-full"
+            className="h-full bg-green-400 rounded-full"
             style={{ width: '25%' }}
           ></div>
         </div>
-        <div className="flex justify-between text-xs text-indigo-300 mt-1">
+        <div className="flex justify-between text-xs text-gray-300 mt-1">
           <span>Step 1 of 4</span>
           <span>Donation Setup</span>
         </div>
@@ -42,7 +42,7 @@ export default function DonationSetup() {
       {/* Header */}
       <div className="pt-8 pb-4 px-4 text-center">
         <h1 className="text-xl font-bold mb-2">Set Your Daily Commitment</h1>
-        <p className="text-sm text-indigo-200">
+        <p className="text-sm text-gray-300">
           If you miss your daily Quran reading, this amount will be donated to charity
         </p>
       </div>
@@ -52,7 +52,7 @@ export default function DonationSetup() {
         <div className="w-full max-w-xs">
           <div className="mb-8">
             <label 
-              className="block text-sm font-medium mb-2 text-indigo-200"
+              className="block text-sm font-medium mb-2 text-gray-300"
               htmlFor="amount"
             >
               Daily Amount 
@@ -69,9 +69,9 @@ export default function DonationSetup() {
                 max="100"
                 value={amount}
                 onChange={handleAmountChange}
-                className={`w-full pl-8 pr-3 py-3 bg-indigo-800/50 border ${
-                  isValid ? 'border-indigo-600' : 'border-red-500'
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 text-white`}
+                className={`w-full pl-8 pr-3 py-3 bg-gray-800/50 border ${
+                  isValid ? 'border-gray-600' : 'border-red-500'
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 text-white`}
               />
             </div>
             
@@ -82,12 +82,12 @@ export default function DonationSetup() {
             )}
           </div>
 
-          <div className="bg-indigo-700/30 rounded-lg p-4 mb-8">
+          <div className="bg-gray-700/30 rounded-lg p-4 mb-8">
             <h3 className="text-sm font-medium mb-2 flex items-center">
               <span className="mr-2">💡</span>
               Recommended Amount
             </h3>
-            <p className="text-xs text-indigo-200">
+            <p className="text-xs text-gray-300">
               Most users set $5-$10 daily. This creates enough incentive to maintain your reading habit while being reasonable for your budget.
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function DonationSetup() {
           onClick={handleContinue}
           disabled={!isValid}
           className={`w-full py-3 rounded-lg transition-colors text-white font-medium ${
-            isValid ? 'bg-amber-500 hover:bg-amber-600' : 'bg-amber-500/50 cursor-not-allowed'
+            isValid ? 'bg-green-500 hover:bg-green-600' : 'bg-green-500/50 cursor-not-allowed'
           }`}
         >
           Continue
@@ -108,7 +108,7 @@ export default function DonationSetup() {
         
         <button 
           onClick={() => navigate('/onboarding')}
-          className="w-full py-3 rounded-lg bg-transparent border border-indigo-600 hover:bg-indigo-800/30 transition-colors text-white font-medium"
+          className="w-full py-3 rounded-lg bg-transparent border border-gray-600 hover:bg-gray-800/30 transition-colors text-white font-medium"
         >
           Back
         </button>

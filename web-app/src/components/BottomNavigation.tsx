@@ -13,8 +13,8 @@ function BottomNavigation() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-indigo-950 border-t border-indigo-800 shadow-lg z-50">
-      <div className="h-0.5 w-full bg-gradient-to-r from-amber-500/20 via-amber-400/30 to-amber-500/20"></div>
+    <nav className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 shadow-lg z-50">
+      <div className="h-0.5 w-full bg-gradient-to-r from-green-500/20 via-green-400/30 to-green-500/20"></div>
       <ul className="flex justify-around items-center">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -25,12 +25,12 @@ function BottomNavigation() {
               <Link
                 to={item.path}
                 className={`flex flex-col items-center text-xs py-2.5 ${
-                  isActive ? 'text-amber-300' : 'text-indigo-300'
+                  isActive ? 'text-green-400' : 'text-gray-400'
                 } transition-colors duration-200`}
               >
                 <Icon 
                   className={`w-5 h-5 mb-1 ${
-                    isActive ? 'stroke-amber-300' : 'stroke-indigo-300'
+                    isActive ? 'stroke-green-400' : 'stroke-gray-400'
                   }`} 
                   strokeWidth={isActive ? 2.5 : 1.5}
                 />
@@ -38,7 +38,7 @@ function BottomNavigation() {
                   {item.label}
                 </span>
                 {isActive && (
-                  <div className="absolute -bottom-0.5 w-1.5 h-1.5 rounded-full bg-amber-300"></div>
+                  <div className="absolute -bottom-0.5 w-1.5 h-1.5 rounded-full bg-green-400"></div>
                 )}
               </Link>
             </li>

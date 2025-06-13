@@ -6,7 +6,7 @@ import { colors } from '../../styles/colors';
 const CardElement = ({ onChange }: { onChange: (event: any) => void }) => {
   return (
     <div 
-      className="w-full h-10 bg-indigo-800/50 border border-indigo-600 rounded-lg flex items-center px-4 text-white text-sm"
+      className="w-full h-10 bg-gray-800/50 border border-gray-600 rounded-lg flex items-center px-4 text-white text-sm"
       onClick={() => onChange({ complete: true })}
     >
       •••• •••• •••• 4242
@@ -16,55 +16,37 @@ const CardElement = ({ onChange }: { onChange: (event: any) => void }) => {
 
 export default function PaymentMethod() {
   const navigate = useNavigate();
-  const [isComplete, setIsComplete] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [cardValid, setCardValid] = useState(false);
 
   const handleCardChange = (event: any) => {
-    setIsComplete(event.complete);
-    setError(event.error ? event.error.message : null);
+    setCardValid(event.complete);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    
-    if (!isComplete) {
-      setError('Please enter valid card details.');
-      return;
-    }
-    
-    setIsProcessing(true);
-    
-    // Mock Stripe payment method creation
-    try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real implementation, you would:
-      // 1. Create a payment method with Stripe.js
-      // 2. Send the payment method ID to your server
-      // 3. Store in your database securely
-      
-      // Navigate to home on success
+  const handleContinue = () => {
+    if (cardValid) {
+      // Mark onboarding as completed and navigate to home
+      localStorage.setItem('onboardingCompleted', 'true');
       navigate('/home');
-    } catch (err) {
-      setError('An unexpected error occurred.');
-    } finally {
-      setIsProcessing(false);
     }
+  };
+
+  const handleSkip = () => {
+    // For demo purposes, allow skipping payment setup
+    localStorage.setItem('onboardingCompleted', 'true');
+    navigate('/home');
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Progress indicator */}
       <div className="w-full px-6 pt-6">
-        <div className="w-full bg-indigo-700/30 h-1.5 rounded-full">
+        <div className="w-full bg-gray-700/30 h-1.5 rounded-full">
           <div 
-            className="h-full bg-amber-400 rounded-full"
+            className="h-full bg-green-400 rounded-full"
             style={{ width: '75%' }}
           ></div>
         </div>
-        <div className="flex justify-between text-xs text-indigo-300 mt-1">
+        <div className="flex justify-between text-xs text-gray-300 mt-1">
           <span>Step 3 of 4</span>
           <span>Payment Setup</span>
         </div>
@@ -73,58 +55,63 @@ export default function PaymentMethod() {
       {/* Header */}
       <div className="pt-8 pb-4 px-4 text-center">
         <h1 className="text-xl font-bold mb-2">Add Payment Method</h1>
-        <p className="text-sm text-indigo-200">
+        <p className="text-sm text-gray-300">
           Your card will only be charged if you miss your daily reading
         </p>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center px-6 py-4">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-6">
         <div className="w-full max-w-xs">
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label 
-                className="block text-sm font-medium mb-2 text-indigo-200"
-                htmlFor="card-element"
-              >
-                Card Details
-              </label>
-              
-              <div id="card-element" className="mb-2">
-                <CardElement onChange={handleCardChange} />
-              </div>
-              
-              {error && (
-                <p className="text-xs text-red-400 mt-1">
-                  {error}
-                </p>
-              )}
-            </div>
-
-            
-
-            {/* Submit Button */}
-            <button 
-              type="submit"
-              disabled={!isComplete || isProcessing}
-              className={`w-full py-3 rounded-lg transition-colors text-white font-medium mb-3 ${
-                isComplete && !isProcessing
-                  ? 'bg-amber-500 hover:bg-amber-600'
-                  : 'bg-amber-500/50 cursor-not-allowed'
-              }`}
+          <div className="mb-6">
+            <label 
+              className="block text-sm font-medium mb-2 text-gray-300"
+              htmlFor="card"
             >
-              {isProcessing ? 'Processing...' : 'Complete Setup'}
-            </button>
-          </form>
-          
-          <button 
-            onClick={() => navigate('/onboarding/signup')}
-            disabled={isProcessing}
-            className="w-full py-3 rounded-lg bg-transparent border border-indigo-600 hover:bg-indigo-800/30 transition-colors text-white font-medium"
-          >
-            Back
-          </button>
+              Card Information
+            </label>
+            <CardElement onChange={handleCardChange} />
+          </div>
+
+          <div className="bg-gray-700/30 rounded-lg p-4 mb-6">
+            <h3 className="text-sm font-medium mb-2 flex items-center">
+              <span className="mr-2">🔒</span>
+              Secure & Protected
+            </h3>
+            <p className="text-xs text-gray-300">
+              Your payment information is encrypted and secure. You'll only be charged if you miss your daily reading commitment.
+            </p>
+          </div>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="p-6 space-y-3">
+        <button 
+          onClick={handleContinue}
+          disabled={!cardValid}
+          className={`w-full py-3 rounded-lg transition-colors text-white font-medium mb-3 ${
+            cardValid 
+              ? 'bg-green-500 hover:bg-green-600'
+              : 'bg-green-500/50 cursor-not-allowed'
+          }`}
+        >
+          Complete Setup
+        </button>
+        
+        <button 
+          onClick={handleSkip}
+          className="w-full py-2 text-sm text-green-400 underline"
+        >
+          Skip for now (Demo only)
+        </button>
+        
+        <button 
+          onClick={() => navigate('/onboarding/signup')}
+          className="w-full py-3 rounded-lg bg-transparent border border-gray-600 hover:bg-gray-800/30 transition-colors text-white font-medium"
+        >
+          Back
+        </button>
       </div>
     </div>
   );

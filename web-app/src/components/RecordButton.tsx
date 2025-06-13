@@ -1,63 +1,61 @@
 import { useState } from 'react';
 
 interface RecordButtonProps {
-  onRecordingComplete?: () => void;
+  onRecordingComplete: () => void;
 }
 
-const RecordButton = ({ onRecordingComplete }: RecordButtonProps) => {
+export default function RecordButton({ onRecordingComplete }: RecordButtonProps) {
   const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
-    null
-  );
+  const [recordingTime, setRecordingTime] = useState(0);
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      recorder.start();
-
-      recorder.ondataavailable = (event) => {
-        const audioBlob = new Blob([event.data], { type: 'audio/wav' });
-        console.log('Audio Blob', audioBlob);
-      };
-
-      setMediaRecorder(recorder);
+  const handleRecordToggle = () => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      setRecordingTime(0);
+      onRecordingComplete();
+    } else {
+      // Start recording
       setIsRecording(true);
-    } catch (err) {
-      console.error('Microphone access denied', err);
+      // Simulate recording timer
+      const timer = setInterval(() => {
+        setRecordingTime(prev => {
+          if (prev >= 60) { // Auto-stop after 60 seconds
+            setIsRecording(false);
+            clearInterval(timer);
+            onRecordingComplete();
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      setIsRecording(false);
-      
-      // Call the callback function when recording is complete
-      if (onRecordingComplete) {
-        onRecordingComplete();
-      }
-    }
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
-    <button
-      onClick={isRecording ? stopRecording : startRecording}
-      className={`
-        w-16 h-16 rounded-full 
-        flex items-center justify-center
-        shadow-md 
-        ${isRecording 
-          ? 'bg-red-600 animate-pulse' 
-          : 'bg-gradient-to-r from-amber-500 to-amber-600'}
-        ${isRecording ? 'shadow-red-700/50' : 'shadow-amber-700/50'}
-        transform transition-all duration-200
-        ${isRecording ? 'scale-110' : 'hover:scale-105 active:scale-95'}
-      `}
-    >
-      <span className="text-xl">{isRecording ? '⏹️' : '🎤'}</span>
-    </button>
+    <div className="flex flex-col items-center">
+      <button
+        onClick={handleRecordToggle}
+        className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 active:scale-95 shadow-lg ${
+          isRecording 
+            ? 'bg-red-600 animate-pulse'
+            : 'bg-gradient-to-r from-green-500 to-green-600'}
+        `}
+      >
+        <span className="text-xl">{isRecording ? '⏹️' : '🎤'}</span>
+      </button>
+      
+      {isRecording && (
+        <div className="mt-2 text-xs text-green-400 font-mono">
+          {formatTime(recordingTime)}
+        </div>
+      )}
+    </div>
   );
-};
-
-export default RecordButton;
+}

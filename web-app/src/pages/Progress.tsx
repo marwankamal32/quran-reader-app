@@ -9,8 +9,8 @@ import DonationSettings from '../components/DonationSettings';
 export default function Progress() {
   const [donationPerMiss, setDonationPerMiss] = useState(5);
   return (
-    <div className="min-h-screen bg-white p-4 pb-24">
-      <h1 className="text-2xl font-bold mb-4">Your Progress</h1>
+    <div className="min-h-screen bg-gray-900 p-4 pb-24">
+      <h1 className="text-2xl font-bold mb-4 text-white">Your Progress</h1>
 
       {/* Summary Cards */}
       {<ProgressHeader completed={15} missed={3} donated={15} />}

@@ -7,43 +7,48 @@ export default function OnboardingIntro() {
 
   const introSteps = [
     {
-      title: "Welcome to Daily Quran",
-      description: "Build a habit of regular Quran reading through commitment and accountability.",
-      icon: "🕌"
+      icon: '📖',
+      title: 'Daily Quran Reading',
+      description: 'Build a consistent habit of reading the Quran every day with gentle accountability'
     },
     {
-      title: "Set a Daily Pledge",
-      description: "Choose a small donation amount that will be given to charity if you miss your daily reading.",
-      icon: "💰"
+      icon: '💰',
+      title: 'Accountability Through Giving',
+      description: 'Set a daily amount that gets donated to charity if you miss your reading'
     },
     {
-      title: "Track Your Progress",
-      description: "Build a streak and see how much you've saved by maintaining your daily reading habit.",
-      icon: "📈"
+      icon: '📱',
+      title: 'Simple Voice Recording',
+      description: 'Just record yourself reading for 1 minute to complete your daily goal'
+    },
+    {
+      icon: '🎯',
+      title: 'Track Your Progress',
+      description: 'See your reading streak and celebrate your spiritual growth journey'
     }
   ];
 
   const handleNext = () => {
     if (currentStep < introSteps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(prev => prev + 1);
     } else {
       navigate('/onboarding/donation');
     }
   };
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-indigo-900 to-indigo-800 text-white">
+    <div className="w-full h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Progress bar */}
       <div className="w-full px-6 pt-6">
-        <div className="w-full bg-indigo-700/30 h-1.5 rounded-full">
+        <div className="w-full bg-gray-700/30 h-1.5 rounded-full">
           <div 
-            className="h-full bg-amber-400 rounded-full transition-all duration-300"
+            className="h-full bg-green-400 rounded-full transition-all duration-300"
             style={{ 
               width: `${(currentStep + 1) / introSteps.length * 100}%`,
             }}
           ></div>
         </div>
-        <div className="flex justify-between text-xs text-indigo-300 mt-1">
+        <div className="flex justify-between text-xs text-gray-300 mt-1">
           <span>Intro</span>
           <span>{currentStep + 1}/{introSteps.length}</span>
         </div>
@@ -60,7 +65,7 @@ export default function OnboardingIntro() {
             {introSteps[currentStep].title}
           </h1>
           
-          <p className="text-center text-indigo-200 mb-8">
+          <p className="text-center text-gray-300 mb-8">
             {introSteps[currentStep].description}
           </p>
         </div>
@@ -70,7 +75,7 @@ export default function OnboardingIntro() {
       <div className="p-6">
         <button 
           onClick={handleNext}
-          className="w-full py-3 rounded-lg bg-amber-500 hover:bg-amber-600 transition-colors text-white font-medium"
+          className="w-full py-3 rounded-lg bg-green-500 hover:bg-green-600 transition-colors text-white font-medium"
         >
           {currentStep < introSteps.length - 1 ? "Next" : "Get Started"}
         </button>

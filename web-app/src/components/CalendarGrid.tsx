@@ -22,7 +22,7 @@ const days: CalendarDay[] = Array.from({ length: daysInMonth }, (_, i) => ({
 const statusColors: Record<DayStatus, string> = {
   completed: 'bg-green-500',
   missed: 'bg-red-400',
-  upcoming: 'bg-gray-200',
+  upcoming: 'bg-gray-600',
 };
 
 const monthNames = [
@@ -32,8 +32,8 @@ const monthNames = [
 
 export default function CalendarGrid() {
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold text-center mb-4">
+    <div className="bg-gray-800 rounded-lg p-4 m-4">
+      <h2 className="text-xl font-bold text-center mb-4 text-white">
         {monthNames[currentMonth]} {currentYear}
       </h2>
 
@@ -45,7 +45,7 @@ export default function CalendarGrid() {
             >
               {day}
             </div>
-            <span className="text-xs capitalize mt-1 text-gray-600">
+            <span className="text-xs capitalize mt-1 text-gray-300">
               {status}
             </span>
           </div>
