@@ -1,14 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import date, timedelta
 from enum import Enum
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from server.api.db import get_session
-from server.api.models import User
+from api.db import get_session
+from api.models import User
+from api.auth import get_current_user, get_current_user_optional, AuthService
+from api.oauth import google_oauth
+from api.config import settings
 
 app = FastAPI(
     title="Quran Reader API",
@@ -16,6 +19,7 @@ app = FastAPI(
     API for tracking Quran reading progress and managing donations.
     
     ## Features
+    * Google OAuth 2.0 authentication
     * Track daily reading progress
     * View reading history
     * Manage donation amounts for missed readings
@@ -28,13 +32,13 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=[settings.FRONTEND_URL, "http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Models
+# Pydantic Models
 class DateRange(BaseModel):
     start_date: date = Field(
         description="Start date for the range (YYYY-MM-DD)",
@@ -107,6 +111,23 @@ class DonationAmount(BaseModel):
         }
     }
 
+class GoogleAuthRequest(BaseModel):
+    email: str
+    name: Optional[str] = None
+    picture: Optional[str] = None
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: dict
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    name: Optional[str]
+    picture: Optional[str]
+    created_at: str
+
 # In-memory storage (replace with database in production)
 daily_donation_amount = 5.0  # Default $5
 
@@ -135,9 +156,113 @@ for i in range(1, 31):
         donation_amount=None
     )
 
+# Routes
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Quran Reader API - Welcome!"}
+
+# =============================================================================
+# AUTH ENDPOINTS
+# =============================================================================
+
+@app.get(
+    "/auth/google/login",
+    summary="Initiate Google OAuth Login",
+    description="Redirects to Google OAuth consent screen"
+)
+async def google_login():
+    """Initiate Google OAuth login flow"""
+    auth_data = google_oauth.generate_auth_url()
+    return RedirectResponse(url=auth_data["auth_url"])
+
+@app.get(
+    "/auth/google/callback",
+    response_model=AuthResponse,
+    summary="Google OAuth Callback",
+    description="Handle Google OAuth callback and return JWT token"
+)
+async def google_callback(
+    code: str = Query(..., description="Authorization code from Google"),
+    state: Optional[str] = Query(None, description="State parameter for CSRF protection"),
+    db: Session = Depends(get_session)
+):
+    """Handle Google OAuth callback"""
+    if not code:
+        raise HTTPException(status_code=400, detail="Authorization code is required")
+    
+    try:
+        auth_result = await google_oauth.handle_oauth_callback(code, db)
+        
+        # For web applications, you might want to redirect to frontend with token
+        # For API clients, return the token directly
+        return auth_result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"OAuth callback failed: {str(e)}")
+
+@app.get(
+    "/auth/me",
+    response_model=UserResponse,
+    summary="Get Current User",
+    description="Get current authenticated user information"
+)
+async def get_me(current_user: User = Depends(get_current_user)):
+    """Get current user information"""
+    return UserResponse(
+        id=current_user.id,
+        email=current_user.email,
+        name=current_user.name,
+        picture=current_user.picture,
+        created_at=current_user.created_at.isoformat()
+    )
+
+@app.post(
+    "/auth/logout",
+    summary="Logout User",
+    description="Logout current user (client should delete token)"
+)
+async def logout():
+    """Logout user - in JWT implementation, client handles token deletion"""
+    return {"message": "Successfully logged out"}
+
+# Legacy endpoint for backwards compatibility
+@app.post("/google")
+async def google_auth_legacy(request: GoogleAuthRequest, db: Session = Depends(get_session)):
+    """Legacy Google auth endpoint - kept for backwards compatibility"""
+    try:
+        # Find or create user
+        user = db.query(User).filter(User.email == request.email).first()
+        
+        if not user:
+            # Create new user
+            user = User(
+                email=request.email,
+                name=request.name,
+                picture=request.picture
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        
+        # Generate JWT token
+        access_token = AuthService.create_user_token(user)
+        
+        return {
+            "status": "success",
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "picture": user.picture
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+# =============================================================================
+# PROGRESS ENDPOINTS
+# =============================================================================
 
 @app.post(
     "/api/progress/summary",
@@ -145,7 +270,10 @@ async def root():
     summary="Get Progress Summary",
     description="Get a summary of completed readings, missed readings, and total donations for a date range."
 )
-async def get_progress_summary(date_range: DateRange) -> ProgressSummary:
+async def get_progress_summary(
+    date_range: DateRange,
+    current_user: User = Depends(get_current_user)
+) -> ProgressSummary:
     """
     Get progress summary for a date range.
     
@@ -183,7 +311,10 @@ async def get_progress_summary(date_range: DateRange) -> ProgressSummary:
     summary="Get Reading History",
     description="Get detailed reading history for a date range, including status and donation amounts."
 )
-async def get_reading_history(date_range: DateRange) -> List[ReadingHistory]:
+async def get_reading_history(
+    date_range: DateRange,
+    current_user: User = Depends(get_current_user)
+) -> List[ReadingHistory]:
     """
     Get reading history for a date range.
     
@@ -220,13 +351,19 @@ async def get_reading_history(date_range: DateRange) -> List[ReadingHistory]:
 
     return history
 
+# =============================================================================
+# DONATION ENDPOINTS  
+# =============================================================================
+
 @app.get(
     "/api/donation/amount",
     response_model=DonationAmount,
     summary="Get Donation Amount",
     description="Get the current daily donation amount for missed readings."
 )
-async def get_donation_amount() -> DonationAmount:
+async def get_donation_amount(
+    current_user: Optional[User] = Depends(get_current_user_optional)
+) -> DonationAmount:
     """
     Get the current daily donation amount.
     
@@ -241,7 +378,10 @@ async def get_donation_amount() -> DonationAmount:
     summary="Set Donation Amount",
     description="Set the daily donation amount for missed readings."
 )
-async def set_donation_amount(donation: DonationAmount) -> DonationAmount:
+async def set_donation_amount(
+    donation: DonationAmount,
+    current_user: User = Depends(get_current_user)
+) -> DonationAmount:
     """
     Set the daily donation amount.
     
@@ -259,37 +399,3 @@ async def set_donation_amount(donation: DonationAmount) -> DonationAmount:
     global daily_donation_amount
     daily_donation_amount = donation.amount
     return DonationAmount(amount=daily_donation_amount)
-
-
-class GoogleAuthRequest(BaseModel):
-    email: str
-    name: Optional[str] = None
-    picture: Optional[str] = None
-
-@app.post("/google")
-async def google_auth(request: GoogleAuthRequest, db: Session = Depends(get_session)):
-    try:
-        # Find or create user
-        user = db.query(User).filter(User.email == request.email).first()
-        
-        if not user:
-            # Create new user
-            user = User(
-                email=request.email,
-                name=request.name,
-                picture=request.picture
-            )
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-        
-        return {
-            "status": "success",
-            "user": {
-                "email": user.email,
-                "name": user.name,
-                "picture": user.picture
-            }
-        }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))

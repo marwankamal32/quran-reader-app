@@ -8,11 +8,13 @@ import {
   GoogleSignup, 
   PaymentMethod 
 } from "./pages/onboarding";
+import AuthCallback from "./pages/AuthCallback";
 
 // Wrapper component to handle bottom navigation display
 function AppContent() {
   const location = useLocation();
   const isOnboarding = location.pathname.includes('/onboarding');
+  const isAuthCallback = location.pathname === '/auth/callback';
   
   // For this demo, we can check if onboarding is completed
   // In a real app, this would come from a context or state management
@@ -27,6 +29,9 @@ function AppContent() {
             isOnboardingCompleted ? <Home /> : <Navigate to="/onboarding" />
           } />
           
+          {/* Auth callback route */}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          
           {/* Main app routes */}
           <Route path="/home" element={<Home />} />
           <Route path="/progress" element={<Progress />} />
@@ -40,8 +45,8 @@ function AppContent() {
           <Route path="/onboarding/payment" element={<PaymentMethod />} />
         </Routes>
       </div>
-      {/* Only show navigation when not in onboarding */}
-      {!isOnboarding && <BottomNavigation />}
+      {/* Only show navigation when not in onboarding or auth callback */}
+      {!isOnboarding && !isAuthCallback && <BottomNavigation />}
     </div>
   );
 }
